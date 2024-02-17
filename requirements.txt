@@ -3,3 +3,5 @@ numpy
 pandas
 plotly
 torch
+torchvision
+torchaudio
