@@ -115,7 +115,7 @@ else:
             df = pd.DataFrame()
             df["2theta"] = np.degrees(d_to_tt(d_desired, lam))
             df["Intensities"] = newint.squeeze().numpy()
-            df["prob_impure"] = F.sigmoid(peak_prediction.detach().squeeze().reshape(datadim).cpu())
+            df["prob_impure"] = F.sigmoid(peak_prediction.detach().squeeze().reshape(datadim))
 
             fig = px.line(df, x="2theta", y=["Intensities","prob_impure"],color_discrete_sequence=["steelblue", "thistle"])
             fig.update_layout(yaxis_title='Intensity')
