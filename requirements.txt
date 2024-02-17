@@ -2,5 +2,4 @@ streamlit
 numpy
 pandas
 plotly
-torch==2.2.0
-torchvision
+torch==2.2.0 -f https://download.pytorch.org/whl/cpu
