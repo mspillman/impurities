@@ -29,7 +29,7 @@ model = ConvNeXtTransformer(depths=[2,2,6,2],
                         ).to(device)
 
 
-state_dict = torch.load("Impurity_detection_ConvNeXt_Transformer.pth")
+state_dict = torch.load("Impurity_detection_ConvNeXt_Transformer.pth", map_location=torch.device('cpu'))
 model.load_state_dict(state_dict["model_state_dict"])
 model.eval()
 
