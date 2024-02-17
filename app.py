@@ -17,7 +17,7 @@ st.title("PXRD impurity detection")
 st.markdown("#### Demo WebApp")
 
 
-device = torch.device("cuda:0" if torch.cuda.is_available else "cpu")
+device = torch.device("cpu")
 dtype = torch.float32
 
 model = ConvNeXtTransformer(depths=[2,2,6,2],
