@@ -2,4 +2,4 @@ streamlit
 numpy
 pandas
 plotly
-torch==2.2.0 -f https://download.pytorch.org/whl/torch_stable.html
+torch @ https://download.pytorch.org/whl/torch_stable.html
