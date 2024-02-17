@@ -2,5 +2,5 @@ streamlit
 numpy
 pandas
 plotly
-torch -f https://download.pytorch.org/whl/torch_stable.html
+torch
 torchvision
