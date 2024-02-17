@@ -2,5 +2,5 @@ streamlit
 numpy
 pandas
 plotly
-torch
+torch==2.2.0
 torchvision
