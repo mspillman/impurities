@@ -14,8 +14,6 @@ st.set_page_config(page_title='PXRD impurity detection', page_icon = ":test_tube
                     layout = 'centered', initial_sidebar_state = 'auto')
 
 st.title("PXRD impurity detection")
-st.markdown("#### Demo WebApp")
-
 
 device = torch.device("cpu")
 dtype = torch.float32
@@ -38,24 +36,30 @@ d_to_tt = lambda d, lam: 2*np.arcsin(lam/(2*d))
 
 with st.sidebar:
     option = st.radio("Options",["App","Instructions","About"])
+    with open("colours.txt") as f:
+        colours = f.readlines()
+    colours = "".join([x.strip() for x in colours]).split(",")
+    plot_xrd_colour = st.selectbox("Select colour for PXRD data", options=colours, index=135).strip()
+    plot_model_colour = st.selectbox("Select colour for model prediction", options=colours, index=138).strip()
 
 if "Instructions" in option:
-    pass
+    with open("instructions.md") as f:
+        instructions = f.readlines()
+    st.markdown("\n".join(instructions))
 elif option == "About":
-    st.write("""This web app was written by [Mark Spillman](https://mspillman.github.io/blog/).
-    """)
+    st.write("This web app was written by [Mark Spillman](https://mspillman.github.io/blog/).")
+    st.write("You can find the code [here](https://github.com/mspillman/impurities)")
+    st.write("And a blog post describing the work [here](https://mspillman.github.io/blog/posts/2024-02-17-Detecting-impurities-in-PXRD-data.html)")
 else:
     st.write("### Upload data in xye format")
     st.write("You can upload multiple files simultaneously")
 
     uploaded_file = st.file_uploader("Choose a file",["xye","xy"],
                                         accept_multiple_files=True)
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
     with col1:
-        prediction_threshold = st.slider("Peak prediction Threshold",min_value=0., max_value=1., value=0.5)
-    with col2:
         enter_wavelength = st.checkbox("Enter wavelength manually",False)
-    with col3:
+    with col2:
         if enter_wavelength:
             wavelength = st.number_input("Wavelength", value=1.54056, format="%.6f", min_value=0.0)
         else:
@@ -95,7 +99,6 @@ else:
                 lam = 1.54056
                 if not enter_wavelength:
                     st.write("Assuming Cu Ka1 data")
-            st.write(lam)
             d_obs = tt_to_d(np.radians(pos), lam)
             d_desired = tt_to_d(np.radians(np.copy(data)), 1.54046)
             d_obs = d_obs[::-1]
@@ -117,8 +120,10 @@ else:
             df["Intensities"] = newint.squeeze().numpy()
             df["prob_impure"] = F.sigmoid(peak_prediction.detach().squeeze().reshape(datadim))
 
-            fig = px.line(df, x="2theta", y=["Intensities","prob_impure"],color_discrete_sequence=["steelblue", "thistle"])
+
+            fig = px.line(df, x="2theta", y=["Intensities","prob_impure"],color_discrete_sequence=[plot_xrd_colour,plot_model_colour])
             fig.update_layout(yaxis_title='Intensity')
-            st.write(names[i])
+            st.markdown("##### "+names[i])
+            st.write(f"Using wavelength of {lam} Å")
             st.write(f"Probability of impure data = {100*F.sigmoid(predicted).squeeze().item():.2f} %")
             st.plotly_chart(fig)
